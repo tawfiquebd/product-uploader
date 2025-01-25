@@ -1,0 +1,31 @@
+{
+    "manifest_version": 3,
+    "name": "Product Uploader to Facebook Marketplace",
+    "version": "1.0",
+    "permissions": [
+      "scripting",
+      "activeTab"
+    ],
+    "icons": {
+      "16": "/images/icon.png",
+      "48": "/images/icon.png",
+      "128": "/images/icon.png"
+    },
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "/images/icon.png",
+        "48": "/images/icon.png",
+        "128": "/images/icon.png"
+      }
+    },
+    "background": {
+      "service_worker": "/scripts/background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://www.facebook.com/marketplace/*"],
+        "js": ["/scripts/content.js"]
+      }
+    ]
+  }
