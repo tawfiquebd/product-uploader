@@ -4,7 +4,8 @@
     "version": "1.0",
     "permissions": [
       "scripting",
-      "activeTab"
+      "activeTab",
+      "http://127.0.0.1:8000/*"
     ],
     "icons": {
       "16": "/images/icon.png",
@@ -27,5 +28,8 @@
         "matches": ["https://www.facebook.com/marketplace/*"],
         "js": ["/scripts/content.js"]
       }
+    ],
+    "host_permissions": [
+        "http://127.0.0.1:8000/*"
     ]
   }
