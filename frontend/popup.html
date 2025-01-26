@@ -7,36 +7,115 @@
       font-family: Arial, sans-serif;
       padding: 20px;
       margin: 0;
-      background-color: #f4f4f9;
-      color: #333;
+      width: 400px; /* Increased width */
+      height: 600px; /* Increased height */
+      box-sizing: border-box;
     }
+
     h1 {
-      font-size: 20px;
-      margin-bottom: 15px;
+      font-size: 18px;
+      text-align: center;
+      margin-bottom: 20px;
     }
+
+    #product-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      /* max-height: 300px; */
+      overflow-y: auto;
+      padding-bottom: 60px;
+    }
+
+    .product {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      background-color: #f9f9f9;
+      width: 120px;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .product img {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"] {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 90%;
+    }
+
     button {
-      display: inline-block;
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: bold;
-      color: white;
+      padding: 10px;
       background-color: #007bff;
+      color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s;
     }
+
     button:hover {
       background-color: #0056b3;
     }
-    button:active {
-      background-color: #003f7f;
+
+    .upload-form {
+      background-color: #ededed;
+      width: 100%;
+      padding: 5px 0 10px 0;
+    }
+    .upload-form h3{
+      text-align: center;
+    }
+
+
+    .copyright {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      margin-left: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>Product Uploader</h1>
-  <button id="fetchProduct">Fetch Product Details</button>
+  <h2>Facebook Market Place Product Uploader</h2>
+  <button id="fetchProduct">Fetch Product</button>
+
+  <hr>
+
+  <div class="upload-form">
+    <h3>Upload Product</h3>
+    <form id="upload-product-form">
+      <input type="text" id="product-name" placeholder="Product Name" required /><br />
+      <input type="number" id="product-price" placeholder="Price" required /><br />
+      <input type="file" id="product-image" required /><br />
+      <button type="submit">Save</button>
+    </form>
+  </div>
+
+  <hr>
+
+  <h3 align="center">Products</h3>
+  <div id="product-container"></div>
+
+
+
+  <footer class="copyright">
+    <p>Developed by <a href="https://linkedin.com/in/tawfiquebd" target="_blank">Md Tawfique Hossain</a></p>
+  </footer>
 </body>
 <script src="./scripts/popup.js"></script>
 </html>
