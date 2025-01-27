@@ -13,7 +13,15 @@ class ProductController extends Controller
     {
         $products = Product::query()
                     ->latest('id')
-                    ->get();
+                    ->get()
+                    ->map(function ($product) {
+                        return [
+                            'name' => $product->name,
+                            'description' => $product->description,
+                            'price' => $product->price,
+                            'image' => url('storage/' . $product->image), // Generate full URL
+                        ];
+                    });;
 
         return response()->json([
             'data' => $products,
@@ -28,7 +36,7 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json([
                 'data' => [],
-                'message' => 'Product not foun!',
+                'message' => 'Product not found!',
             ], Response::HTTP_NOT_FOUND);
         }
         return response()->json([
