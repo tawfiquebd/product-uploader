@@ -19,6 +19,7 @@ function injectProductDetails(product) {
           const titleLabel = document.querySelector('label[aria-label="Title"]');
           const priceLabel = document.querySelector('label[aria-label="Price"]');
           const descriptionLabel = document.querySelector('label[aria-label="Description"]');
+          const imageUploadField = document.querySelector('input[type="file"]');
 
           const titleField = titleLabel ? titleLabel.querySelector('input') : null;
           const priceField = priceLabel ? priceLabel.querySelector('input') : null;
@@ -49,6 +50,25 @@ function injectProductDetails(product) {
             console.error('Description field not found.');
           }
 
+          
+          // Call the upload function with the local image path
+          try {
+            console.log('Uploading local image:');
+        
+            // Locate the file input field
+            const fileInput = document.querySelector('input[type="file"][accept*="image/"]');
+            if (!fileInput) {
+              console.error('File input not found.');
+              return;
+            }
+   
+            fileInput.click();
+        
+            console.log('Prompting user to select an image manually.');
+          } catch (err) {
+            console.error('Error during image upload:', err);
+          }
+
           // Return success if all fields were found and populated
           return titleField && priceField && descriptionField;
         };
@@ -58,7 +78,7 @@ function injectProductDetails(product) {
         const interval = setInterval(() => {
           const success = inject();
           attempts++;
-          if (success || attempts > 10) {
+          if (success || attempts > 1) {
             clearInterval(interval);
             if (!success) {
               console.error('Failed to inject product details after multiple attempts.');
