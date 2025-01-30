@@ -20,6 +20,8 @@ class ProductController extends Controller
                             'description' => $product->description,
                             'price' => $product->price,
                             'image' => url('storage/' . $product->image), // Generate full URL
+                            'category' => $product->category,
+                            'condition' => $product->condition,
                         ];
                     });;
 
@@ -51,6 +53,8 @@ class ProductController extends Controller
             'name' => 'required|string',
             'price' => 'required|numeric',
             'image' => 'required|image|max:2048',
+            'category' => 'required|string',
+            'condition' => 'required|string',
         ]);
 
         $imagePath = $request->file('image')->store('products', 'public');
@@ -59,6 +63,8 @@ class ProductController extends Controller
             'name' => $request->input('name'),
             'price' => $request->input('price'),
             'image' => $imagePath,
+            'category' => $request->category,
+            'condition' => $request->condition
         ]);
 
         return response()->json([

@@ -88,6 +88,48 @@
       left: 0;
       margin-left: 20px;
     }
+
+
+    /* General Dropdown Styling */
+  select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  /* Hover & Focus Effects */
+  select:hover, select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+
+  /* Label Styling */
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #444;
+  }
+
+  /* Style for the dropdown container */
+  .dropdown-container {
+    margin-bottom: 15px;
+  }
+
+  /* Style for the dropdown options */
+  select option {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+
   </style>
 </head>
 <body>
@@ -102,6 +144,24 @@
       <input type="text" id="product-name" placeholder="Product Name" required /><br />
       <input type="number" id="product-price" placeholder="Price" required /><br />
       <input type="file" id="product-image" required /><br />
+      
+      <div class="dropdown-container">
+        <label for="product-category">Category</label>
+        <select id="product-category" name="category" required>
+          <option value="">Select a Category</option>
+        </select>
+      </div>
+
+      <div class="dropdown-container">
+        <label for="product-condition">Condition</label>
+        <select id="product-condition" name="condition" required>
+          <option value="New">New</option>
+          <option value="Used - like new">Used - like new</option>
+          <option value="Used - good">Used - good</option>
+          <option value="Used - fair">Used - fair</option>
+        </select>
+      </div>
+      
       <button type="submit">Save</button>
     </form>
   </div>

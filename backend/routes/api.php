@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\CategoryHelper;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,7 @@ Route::group(["prefix" => "products"], function () {
     Route::post('/', [ProductController::class, 'store']);
 });
 
+Route::get('/categories', function () {
+    return response()->json(CategoryHelper::getCategories());
+});
 
