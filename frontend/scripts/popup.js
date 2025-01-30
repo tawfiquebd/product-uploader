@@ -1,6 +1,6 @@
 document.getElementById('fetchProduct').addEventListener('click', async () => {
   try {
-    fetchProducts();
+    await fetchProducts();
   } catch (error) {
     console.error('Error fetching product:', error);
   }
@@ -54,17 +54,17 @@ function injectProductDetails(product) {
           // Call the upload function with the local image path
           try {
             console.log('Uploading local image:');
-        
-            // Locate the file input field
-            const fileInput = document.querySelector('input[type="file"][accept*="image/"]');
-            if (!fileInput) {
-              console.error('File input not found.');
-              return;
+
+            if (!window.imageUploadTriggered) {
+              const fileInput = document.querySelector('input[type="file"][accept*="image/"]');
+              if (fileInput) {
+                fileInput.click();
+                window.imageUploadTriggered = true; // Prevent multiple triggers
+                console.log('Prompting user to select an image manually.');
+              } else {
+                console.error('File input not found.');
+              }
             }
-   
-            fileInput.click();
-        
-            console.log('Prompting user to select an image manually.');
           } catch (err) {
             console.error('Error during image upload:', err);
           }
@@ -91,7 +91,7 @@ function injectProductDetails(product) {
   });
 }
 
-function fetchProducts() {
+async function fetchProducts() {
   fetch('http://127.0.0.1:8000/api/products')
     .then((response) => {
       if (!response.ok) {
