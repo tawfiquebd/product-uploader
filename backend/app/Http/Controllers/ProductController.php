@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
-    // Fetch all products
     public function index()
     {
         $products = Product::query()

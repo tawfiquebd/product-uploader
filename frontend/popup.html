@@ -136,13 +136,15 @@
   <h2>Facebook Market Place Product Uploader</h2>
   <button id="fetchProduct">Fetch Product</button>
 
+  <button id="clear-form" style="background-color: #f44336; color: white; padding: 10px; border: none; cursor: pointer; margin-right: 5px;">Clear</button>
+  <button id="reload-page" style="background-color: #4CAF50; color: white; padding: 10px; border: none; cursor: pointer;">Reload</button>
   <hr>
 
   <div class="upload-form">
     <h3>Upload Product</h3>
     <form id="upload-product-form">
       <input type="text" id="product-name" placeholder="Product Name" required /><br />
-      <input type="number" id="product-price" placeholder="Price" required /><br />
+      <input type="number" min="0" step="0.01" id="product-price" placeholder="Price" required /><br />
       <input type="file" id="product-image" required /><br />
       
       <div class="dropdown-container">
@@ -156,9 +158,9 @@
         <label for="product-condition">Condition</label>
         <select id="product-condition" name="condition" required>
           <option value="New">New</option>
-          <option value="Used - like new">Used - like new</option>
-          <option value="Used - good">Used - good</option>
-          <option value="Used - fair">Used - fair</option>
+          <option value="Used &ndash; like new">Used &ndash; like new</option>
+          <option value="Used &ndash; good">Used &ndash; good</option>
+          <option value="Used &ndash; fair">Used &ndash; fair</option>
         </select>
       </div>
       

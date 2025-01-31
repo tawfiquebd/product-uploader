@@ -7,24 +7,50 @@ document.getElementById('fetchProduct').addEventListener('click', async () => {
 });
 
 
-const categoryMapping = {
-  "Tools": "Tools",
-  "Furniture": "Furniture",
-  "Household": "Household",
-  "Garden": "Garden",
-  "Appliances": "Appliances"
-};
 
-const conditionMapping = {
-  "New": "New",
-  "Used - like new": "Used - like new",
-  "Used - good": "Used - good",
-  "Used - fair": "Used - fair"
-};
+// Clear button event
+document.getElementById('clear-form').addEventListener('click', clearForm);
+
+function clearForm() {
+  document.getElementById('product-name').value = '';
+  document.getElementById('product-price').value = '';
+  document.getElementById('product-image').value = '';
+  document.getElementById('product-category').value = '';
+  document.getElementById('product-condition').value = '';
+}
+
+document.getElementById('reload-page').addEventListener('click', () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.reload(tabs[0].id);
+  });
+});
+
+
+function downloadImage(imageUrl, fileName) {
+  fetch(imageUrl)
+    .then(response => response.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName; // Set file name for download
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      console.log('Image downloaded:', fileName);
+    })
+    .catch(error => console.error('Error downloading image:', error));
+}
 
 // Function to inject product details into Facebook Marketplace form
 function injectProductDetails(product) {
   console.log('Starting injection for product:', product);
+  // Download the image before injecting
+  if (product.image) {
+    const fileName = `product-${Date.now()}.jpg`; // Generate unique name
+    downloadImage(product.image, fileName);
+  }
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.scripting.executeScript({
@@ -35,15 +61,7 @@ function injectProductDetails(product) {
           const titleLabel = document.querySelector('label[aria-label="Title"]');
           const priceLabel = document.querySelector('label[aria-label="Price"]');
           const descriptionLabel = document.querySelector('label[aria-label="Description"]');
-          const imageUploadField = document.querySelector('input[type="file"]');
-          
-          // const categoryLabel = document.querySelector('label[aria-label="Category"]');
-          // const categoryDropdown = categoryLabel ? categoryLabel.querySelector('select') : null;
-
-          // const conditionLabel = document.querySelector('label[aria-label="Condition"]');
-          // const conditionDropdown = conditionLabel ? conditionLabel.querySelector('select') : null;
         
-          
           const titleField = titleLabel ? titleLabel.querySelector('input') : null;
           const priceField = priceLabel ? priceLabel.querySelector('input') : null;
           const descriptionField = descriptionLabel ? descriptionLabel.querySelector('textarea') : null;
@@ -74,104 +92,130 @@ function injectProductDetails(product) {
           }
 
 
-                    async function injectCategory(categoryText) {
-                      const dropdowns = document.querySelectorAll('[aria-label]');
-                      let categoryDropdown = null;
-                    
-                      // Identify the correct category dropdown
-                      dropdowns.forEach(dropdown => {
-                        if (dropdown.getAttribute("aria-label").includes("Category")) {
-                          categoryDropdown = dropdown;
-                        }
-                      });
-
-                      console.log('cat dropdown: categoryDropdown', categoryDropdown)
-                    
-                      if (!categoryDropdown) {
-                        console.error('Category dropdown not found.');
-                        return false;
-                      }
-                    
-                      categoryDropdown.click(); // Open the dropdown
-                      console.log('Clicked category dropdown.');
-                    
-                      setTimeout(() => {
-                        // Get all dropdown options inside the opened menu
-                        const categoryOptions = Array.from(document.querySelectorAll('div[role="menuitem"], div[role="option"]'));
-                        console.log("🔎 Detected category options:", categoryOptions.map(opt => opt.innerText));
-                    
-                        // Find the matching category option
-                        const matchingOption = categoryOptions.find(option => option.innerText.trim() === categoryText);
-                    
-                        if (matchingOption) {
-                          matchingOption.click();
-                          console.log(`Injected category: ${categoryText}`);
-                        } else {
-                          console.error(`Category "${categoryText}" not found.`);
-                        }
-                      }, 2000); // Allow time for the dropdown to load
+          async function injectCategory(categoryText) {
+            try {
+                console.log("🔍 Attempting to inject category:", categoryText);
+        
+                // Step 1: Check if dropdown is already open
+                let dropdownMenu = document.querySelector('div[aria-label="Dropdown menu"][role="dialog"]');
+                
+                if (!dropdownMenu) {
+                    console.log("➡️ Opening category dropdown...");
+                    const categoryDropdown = document.querySelector('[aria-label="Category"]');
+                    if (!categoryDropdown) {
+                        console.error(" Category dropdown button not found.");
+                        return;
                     }
-                    
-          
-                    // Inject Condition (More Reliable)
-                    async function injectCondition(conditionText) {
-                      const conditionDropdown = document.querySelector('[aria-label="Condition"]');
-                      if (!conditionDropdown) {
-                        console.error('Condition dropdown not found.');
-                        return false;
-                      }
-          
-                      conditionDropdown.click(); // Open dropdown
-                      console.log('Clicked condition dropdown.');
-          
-                      setTimeout(() => {
-                        const conditionOptions = Array.from(document.querySelectorAll('div[role="menuitem"], div[role="option"]'));
-                        console.log("Detected condition options:", conditionOptions.map(opt => opt.innerText));
-          
-                        const matchingOption = conditionOptions.find(option => option.innerText.trim() === conditionText);
-          
-                        if (matchingOption) {
-                          matchingOption.click();
-                          console.log(`Injected condition: ${conditionText}`);
-                        } else {
-                          console.error(`Condition "${conditionText}" not found.`);
-                        }
-                      }, 3000); // Wait for dropdown to load
+        
+                    categoryDropdown.click(); // Open dropdown
+        
+                    // Wait for dropdown to appear
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+        
+                    // Re-check if dropdown is open
+                    dropdownMenu = document.querySelector('div[aria-label="Dropdown menu"][role="dialog"]');
+                    if (!dropdownMenu) {
+                        console.error(" Dropdown did not open.");
+                        return;
                     }
-          
-          // Inject caetgory and condtition
-          injectCategory(product.category);
-          injectCondition(product.condition);
-
-          
-          // Call the upload function with the local image path
-          try {
-            console.log('Uploading local image:');
-
-            if (!window.imageUploadTriggered) {
-              const fileInput = document.querySelector('input[type="file"][accept*="image/"]');
-              if (fileInput) {
-                fileInput.click();
-                window.imageUploadTriggered = true; // Prevent multiple triggers
-                console.log('Prompting user to select an image manually.');
-              } else {
-                console.error('File input not found.');
-              }
+                }
+        
+                console.log(" Dropdown is open!");
+        
+                // Step 2: Wait a bit to stabilize UI
+                await new Promise(resolve => setTimeout(resolve, 500));
+        
+                // Step 3: Find category options
+                const categoryOptions = Array.from(dropdownMenu.querySelectorAll('div.x1lq5wgf.xgqcy7u.x30kzoy'));
+        
+                console.log(" Available categories:", categoryOptions.map(opt => opt.innerText.trim()));
+        
+                // Step 4: Match and click the correct category
+                const matchingOption = categoryOptions.find(option => option.innerText.trim() === categoryText);
+        
+                if (matchingOption) {
+                    console.log(` Found category: ${categoryText}`);
+        
+                    // Ensure it's visible
+                    matchingOption.scrollIntoView({ behavior: "smooth", block: "center" });
+        
+                    // Step 5: Click the category after a short delay
+                    setTimeout(() => {
+                        matchingOption.dispatchEvent(new Event("mousedown", { bubbles: true }));
+                        matchingOption.dispatchEvent(new Event("mouseup", { bubbles: true }));
+                        matchingOption.dispatchEvent(new Event("click", { bubbles: true }));
+        
+                        console.log(` Successfully selected category: ${categoryText}`);
+        
+                        // Extra delay to allow UI to register selection
+                        setTimeout(() => console.log("✅ Selection should now be registered!"), 1000);
+                    }, 500);
+                } else {
+                    console.error(` Category "${categoryText}" not found in dropdown options.`);
+                }
+        
+            } catch (error) {
+                console.error(" Error injecting category:", error);
             }
-          } catch (err) {
-            console.error('Error during image upload:', err);
+        }
+                    
+          
+        // Inject Condition (More Reliable)
+        async function injectCondition(conditionText) {
+          const conditionDropdown = document.querySelector('[aria-label="Condition"]');
+          if (!conditionDropdown) {
+            return false;
           }
 
-          // Return success if all fields were found and populated
-          return titleField && priceField && descriptionField;
-        };
+          conditionDropdown.click(); 
+
+          setTimeout(() => {
+            const conditionOptions = Array.from(document.querySelectorAll('div[role="menuitem"], div[role="option"]'));                      
+
+            const matchingOption = conditionOptions.find(option => option.innerText.trim() === conditionText);
+
+            if (matchingOption) {
+              matchingOption.click();
+              console.log(`Injected condition: ${conditionText}`);
+            } else {
+              console.error(`Condition "${conditionText}" not found.`);
+            }
+          }, 3000); // Wait for dropdown to load
+        }
+          
+        injectCategory(product.category);
+        injectCondition(product.condition);
+
+        // Call the upload function with the local image path
+        try {
+          console.log('Uploading local image:');
+          window.imageUploadTriggered = false; // Prevent multiple triggers
+
+          if (!window.imageUploadTriggered) {
+            const fileInput = document.querySelector('input[type="file"][accept*="image/"]');
+            if (fileInput) {
+              fileInput.click();
+
+              window.imageUploadTriggered = true; // Prevent multiple triggers
+              console.log('Prompting user to select an image manually.');
+            } else {
+              console.error('File input not found.');
+            }
+          }
+        } catch (err) {
+          console.error('Error during image upload:', err);
+        }
+
+        // Return success if all fields were found and populated
+        return titleField && priceField && descriptionField;
+      };
 
         // Retry mechanism for dynamic content
         let attempts = 0;
         const interval = setInterval(() => {
           const success = inject();
           attempts++;
-          if (success || attempts > 1) {
+          if (success || attempts >= 0) {
             clearInterval(interval);
             if (!success) {
               console.error('Failed to inject product details after multiple attempts.');
@@ -236,7 +280,7 @@ document.getElementById('upload-product-form').addEventListener('submit', async 
   formData.append('name', name);
   formData.append('price', price);
   formData.append('image', imageFile);
-  formData.append('category', category); // Add category
+  formData.append('category', category);
   formData.append('condition', condition); // Add condition . s
   
 
@@ -253,6 +297,7 @@ document.getElementById('upload-product-form').addEventListener('submit', async 
     const data = await response.json();
     console.log('Product uploaded successfully:', data);
     alert('Product uploaded successfully!');
+    clearForm();
   } catch (error) {
     console.error('Error uploading product:', error);
   }
