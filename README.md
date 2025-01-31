@@ -1,10 +1,8 @@
 | | | | | |
 |-|-|-|-|-|
 |Product Management System for Facebook Marketplace| | | | |
-|==================================================| | | | |
 | | | | | |
 |🚀 Introduction| | | | |
-|---------------| | | | |
 | | | | | |
 |This project is a **Product Management System** designed to simplify product uploads to **Facebook Marketplace**. It allows users to:| | | | |
 | | | | | |
@@ -14,7 +12,6 @@
 |-   Automatically open the image upload dialog for manual selection| | | | |
 | | | | | |
 |🛠️ Technologies Used| | | | |
-|---------------------| | | | |
 | | | | | |
 |-   **Laravel** (Backend API)| | | | |
 |-   **JavaScript** (Frontend logic & Chrome extension)| | | | |
@@ -30,7 +27,7 @@
 | | | | | |
 |```| | | | |
 |git clone https://github.com/tawfiquebd/product-uploader.git| | | | |
-|cd your-repository| | | | |
+|cd your-repository  AND then checkout to staging branch | | | | |
 | | | | | |
 |```| | | | |
 | | | | | |
